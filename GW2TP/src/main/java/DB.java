@@ -26,19 +26,9 @@ public class DB {
     ResultSet result;
     err err;
     
-    Date stamp;
-    
     long MILLIS_PER_DAY = 24 * 60 * 60 * 1000L;
     
     SessionFactory factory;
-    
-    String add_item = "INSERT into Items VALUES(?,?,?,?,?,?,?,?,?,?)";
-    PreparedStatement ps_add_item;
-    
-    String add_price = "INSERT into Prices VALUES(?,?,?,?,?)";
-    PreparedStatement ps_add_price;
-    
-    boolean newDB;
     
     public void initFactoryInstance() {
     	try {
