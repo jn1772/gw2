@@ -16,11 +16,17 @@ public class Item implements Comparable<Item>{
         
         //buying / selling unit prices and quantity
         public Double buyUnitPrice, sellUnitPrice;
-        public Integer buyQuantity, sellQuantity;
+        public Integer demand, supply;
         
         public Date lastUpdated;
         
-        public String chatLink, name, icon, description, type, rarity;
+        public String chatLink, name, icon, description;
+        
+        Rarity rarity;
+        Type type;
+        Flags[] flags;
+        GameTypes[] gameTypes;
+        Restrictions[] restrictions;
         
         //Listings at Trading Post
         public ArrayList<Long> bListings, bUnitPrice, bQuantity;
@@ -34,8 +40,8 @@ public class Item implements Comparable<Item>{
         public void setDescription(String desc) {this.description = desc;}
         public void setIcon(String icon) {this.icon = icon;}
         public void setChatLink(String cl) {this.chatLink = cl;}
-        public void setType(String type) {this.type = type;}
-        public void setRarity(String rarity) {this.rarity = rarity;}
+        public void setType(Type type) {this.type = type;}
+        public void setRarity(Rarity rarity) {this.rarity = rarity;}
         public void setLevel(int level) {this.level = level;}
         public void setVendorValue(int vendor_value) {this.vendorValue = vendor_value;}
         public void setDefaultSkin(Integer df) {this.defaultSkin = df;}
@@ -48,8 +54,8 @@ public class Item implements Comparable<Item>{
         public String getDescription() {return description;}
         public String getIcon() {return icon;}
         public String getChatLink() {return chatLink;}
-        public String getType() {return this.type;}
-        public String getRarity() {return rarity;}
+        public Type getType() {return this.type;}
+        public Rarity getRarity() {return rarity;}
         public Integer getDefaultSkin() {return defaultSkin;}
         public int getLevel() {return level;}
         public int getVendorValue() {return vendorValue;}
@@ -58,6 +64,9 @@ public class Item implements Comparable<Item>{
         public CoinFormat getBuyUnitPriceCF() {return buyUnitPriceCF;}
         public CoinFormat getSellUnitPriceCF() {return sellUnitPriceCF;}
         public Date getLastUpdated() { return lastUpdated; }
+        public double getProfit() { return profit; }
+        public double getDemand() { return demand; }
+        public double getSupply() { return supply; }
         
         Item(){
             bListings = new ArrayList<>();
@@ -69,16 +78,16 @@ public class Item implements Comparable<Item>{
             sQuantity = new ArrayList<>();
             
             buyUnitPrice = (double) 0;
-            buyQuantity = 0;
+            demand = 0;
             sellUnitPrice = (double) 0;
-            sellQuantity = 0;
+            supply = 0;
             
             profit = 0;
             defaultSkin = null;
         }
 
         double calcProfit(){
-            if(name == null || buyQuantity == 0 || sellQuantity == 0)return 0;
+            if(name == null || demand == 0 || supply == 0)return 0;
             double diff = sellUnitPrice - buyUnitPrice;
             double tax = sellUnitPrice*0.15;
             return profit = diff-tax;
@@ -96,5 +105,27 @@ public class Item implements Comparable<Item>{
             StringBuilder sb = new StringBuilder();
             sb.append("ID: ").append(id).append(" Name: ").append(name).append(" Level: ").append(level).append(" Rarity: ").append(rarity);
             return sb.toString();
+        }
+        
+        public enum Rarity{
+        	Junk, Basic, Fine, Masterwork, Rare, Exotic, Ascended, Legendary
+        }
+        public enum Type{
+        	Armor, Back, Bag, Consumable, Container, CraftingMaterial,
+        	Gathering,	Gizmo,	MiniPet, Tool, Trait, Trinket, Trophy,
+        	UpgradeComponent, Weapon
+        }
+        public enum Flags{
+        	AccountBindOnUse, AccountBound,	Attuned, BulkConsume, DeleteWarning,
+        	HideSuffix, Infused, MonsterOnly, NoMysticForge, NoSalvage,
+        	NoSell,	NotUpgradeable,	NoUnderwater, SoulbindOnAcquire, SoulBindOnUse,
+        	Tonic, Unique
+        }
+        public enum GameTypes{
+        	Activity, Dungeon, Pve, Pvp, PvpLobby, Wvw
+        }
+        public enum Restrictions{
+        	Asura, Charr, Human, Norn, Sylvari,	Elementalist, Engineer,
+        	Guardian, Mesmer, Necromancer, Ranger, Thief, Warrior
         }
 }

@@ -32,8 +32,6 @@
     <property name="hibernate.c3p0.acquireRetryAttempts">1</property>
     <property name="hibernate.c3p0.acquireRetryDelay">250</property>
 	
-	
-	
 	<!-- List of XML mapping files -->
     <mapping class="com.codebytes.core.Price" />
     <mapping class="com.codebytes.core.ExchangeRate" />

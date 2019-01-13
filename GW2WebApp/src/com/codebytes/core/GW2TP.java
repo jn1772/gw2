@@ -21,15 +21,23 @@ public class GW2TP implements Runnable{
     
     ArrayList<Long> itemIds;
     
-    Item[] items;
+    public Item[] items;
     
-    Price[] prices;
+    public Price[] prices;
     
     @Autowired
     Genie genie;
     
     @Autowired
+    Indexer indexer;
+    
+    @Autowired
     DB db;
+    
+    public Item getItem(int id) {
+    	if(id<0 || id>=items.length || items[id] == null)return null;
+    	return items[id];
+    }
     
     long UPDATE_FREQUENCY = 15 * 60 * 60 * 1000L;
     
@@ -90,12 +98,16 @@ public class GW2TP implements Runnable{
 		    	lastQuarterLogged = lastQuarter;
 		    	
 	        	info.updateInfo(lastQuarter);
-
+	        	
+	        	itemIds = info.itemIds;
 	        	items = info.items;
 	        	prices = info.prices;
 	        	
-	        	Item[] pItems = computeProfitableItems(100);
-	        	uiDataPrep.prepareRecommendations(pItems, 10);
+	        	indexer.beginIndexing();
+	        	
+	        	
+	        	Item[] pItems = computeProfitableItems(200);
+	        	uiDataPrep.prepareRecommendations(pItems, 200);
 	        	
 	        	//displayProfitableItems(40);
 		    }

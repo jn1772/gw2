@@ -38,6 +38,9 @@ class InfoGet{
 	@Autowired
     DB db;
     
+	@Autowired
+	Indexer indexer;
+	
 	ArrayList<Long> itemIds;
     Item[] items;
     Price[] prices;
@@ -63,7 +66,7 @@ class InfoGet{
     	items = initItems();
     	prices = new Price[items.length];
     	
-    	max = itemIds.size(); //400
+    	max = 200;//itemIds.size(); //400
     	
     	getItemsInfoFast();
     	getItemPricesFast(dt);
@@ -346,8 +349,8 @@ class InfoGet{
 	 		                items[id].setName(name);
 	 		                items[id].setIcon(icon);
 	 		              	items[id].setDescription(description);
-	 		             	items[id].setType(type);
-	 		            	items[id].setRarity(rarity);
+	 		             	items[id].setType(Item.Type.valueOf(type));
+	 		            	items[id].setRarity(Item.Rarity.valueOf(rarity));
 	 		           		items[id].setLevel(level);
 	 		          		items[id].setVendorValue(vendor_value);
 	 		         		items[id].setDefaultSkin(default_skin);
@@ -412,8 +415,8 @@ class InfoGet{
 		                    Integer s_quant = (int)(long)sells.get("quantity");
 		                    double s_price = (int)(long)sells.get("unit_price");
 		                    
-		                    items[id].buyQuantity = b_quant;
-		                    items[id].sellQuantity = s_quant;
+		                    items[id].demand = b_quant;
+		                    items[id].supply = s_quant;
 		                    items[id].setBuyUnitPrice(b_price);
 		                    items[id].setSellUnitPrice(s_price);
 		                    items[id].calcProfit();

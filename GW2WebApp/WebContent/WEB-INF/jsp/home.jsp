@@ -14,45 +14,8 @@
 <link rel="stylesheet" href='<c:url value="/resources/css/homeStyle.css"></c:url>' type="text/css">
 </head>
 <body>
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-		<div class="container">
-			<a class="navbar-brand" href="#">GreedyTP</a>
-			<button class="navbar-toggler" type="button" data-toggle="collapse"
-				data-target="#navbarNav" aria-controls="navbarNav"
-				aria-expanded="false" aria-label="Toggle navigation">
-				<span class="navbar-toggler-icon"></span>
-			</button>
-			<div class="collapse navbar-collapse" id="navbarNav">
-				<ul class="navbar-nav">
-					<li class="nav-item active"><a class="nav-link" href="#">Home
-							<span class="sr-only">(current)</span>
-					</a></li>
-					<li class="nav-item active"><a class="nav-link" href="#">Items
-							<span class="sr-only">(current)</span>
-					</a></li>
-					<li class="nav-item active"><a class="nav-link" href="#">About
-							<span class="sr-only">(current)</span>
-					</a></li>
-					<li class="nav-item active"><a class="nav-link" href="#">Contact
-							<span class="sr-only">(current)</span>
-					</a></li>
-					<li class="nav-item dropdown nav-item active"><a
-						class="nav-link dropdown-toggle" href="#"
-						id="navbarDropdownMenuLink" data-toggle="dropdown"
-						aria-haspopup="true" aria-expanded="false"> More Features </a>
-						<div class="dropdown-menu"
-							aria-labelledby="navbarDropdownMenuLink">
-							<a class="dropdown-item" href="#">Action</a> <a
-								class="dropdown-item" href="#">Another action</a> <a
-								class="dropdown-item" href="#">Something else here</a>
-						</div></li>
-				</ul>
-			</div>
-
-		</div>
-	</nav>
-
-
+	<jsp:include page="navbar.jsp"/>
+	
 	<div class="container">
 		<div class="jumbotron">
 			<h2>${welcomeShort}</h2>
@@ -64,27 +27,7 @@
 		Current Item Purchase Recommendations
 		</p>
 		
-		<nav aria-label="Page navigation example">
-			<ul class="pagination">
-				<li class="page-item"><a class="page-link" href="#"
-					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
-						<span class="sr-only">Previous</span>
-				</a></li>
-				<li class="page-item"><a class="page-link" href="#">1</a></li>
-				<li class="page-item"><a class="page-link" href="#">2</a></li>
-				<li class="page-item"><a class="page-link" href="#">3</a></li>
-				<li class="page-item"><a class="page-link" href="#">4</a></li>
-				<li class="page-item"><a class="page-link" href="#">5</a></li>
-				<li class="page-item"><a class="page-link" href="#">6</a></li>
-				<li class="page-item"><a class="page-link" href="#">7</a></li>
-				<li class="page-item"><a class="page-link" href="#">8</a></li>
-				<li class="page-item"><a class="page-link" href="#"
-					aria-label="Next"> <span aria-hidden="true">&raquo;</span> <span
-						class="sr-only">Next</span>
-				</a></li>
-			</ul>
-			
-		</nav>
+		<jsp:include page="pageNav.jsp"/>
 			<table id="dtBasicExample"
 				class="table table-striped table-bordered table-sm">
 				<thead>
@@ -98,12 +41,13 @@
 					</tr>
 				</thead>
 				<tbody>
-					<c:forEach items="${items}" var="item">
+					<c:forEach items="${items}" begin="${begin}" end="${end}" var="item">
 						<tr>
 							<td><c:out value="${item.id}" /></td>
-							<td><img width="32px" height="32px" class="mw-5 mh-5"
-								alt="Responsive image" src=<c:out value="${item.icon}" /> /> <c:out
-									value="${item.name}" /></td>
+							<td>
+								<img width="32px" height="32px" class="mw-5 mh-5" alt="${item.name}" src=<c:out value="${item.icon}" /> /> 
+									<a href="/GW2TP?item=${item.id}">	<c:out value="${item.name}" /></a>
+							</td>
 							<td><c:out value="${item.type}" /></td>
 							<td><c:out value="${item.rarity}" /></td>
 							<td>
@@ -131,26 +75,7 @@
 				</tfoot>
 			</table>
 		
-		<nav aria-label="Page navigation example">
-			<ul class="pagination">
-				<li class="page-item"><a class="page-link" href="#"
-					aria-label="Previous"> <span aria-hidden="true">&laquo;</span>
-						<span class="sr-only">Previous</span>
-				</a></li>
-				<li class="page-item"><a class="page-link" href="./rec=10">1</a></li>
-				<li class="page-item"><a class="page-link" href="./rec=20">2</a></li>
-				<li class="page-item"><a class="page-link" href="#">3</a></li>
-				<li class="page-item"><a class="page-link" href="#">4</a></li>
-				<li class="page-item"><a class="page-link" href="#">5</a></li>
-				<li class="page-item"><a class="page-link" href="#">6</a></li>
-				<li class="page-item"><a class="page-link" href="#">7</a></li>
-				<li class="page-item"><a class="page-link" href="#">8</a></li>
-				<li class="page-item"><a class="page-link" href="#"
-					aria-label="Next"> <span aria-hidden="true">&raquo;</span> <span
-						class="sr-only">Next</span>
-				</a></li>
-			</ul>
-		</nav>
+		<jsp:include page="pageNav.jsp"/>
 		</div>
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
 		integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
