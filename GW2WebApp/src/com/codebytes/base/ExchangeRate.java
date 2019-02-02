@@ -1,4 +1,4 @@
-package com.codebytes.core;
+package com.codebytes.base;
 
 import java.sql.Timestamp;
 import java.util.Date;
@@ -17,9 +17,11 @@ public class ExchangeRate{
 	Timestamp timestamp;
 	
 	@Column(name = "coins_per_gem_buy", nullable = false)
+	public
 	int coins_per_gem_buy;
 	
 	@Column(name = "coins_per_gem_sell", nullable = false)
+	public
 	int coins_per_gem_sell;
 	
 	public ExchangeRate() {};

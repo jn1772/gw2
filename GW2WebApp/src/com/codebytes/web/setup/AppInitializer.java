@@ -1,4 +1,4 @@
-package com.codebytes.web;
+package com.codebytes.web.setup;
 
 import javax.servlet.ServletContext;
 import javax.servlet.ServletRegistration;
@@ -16,18 +16,18 @@ public class AppInitializer implements WebApplicationInitializer {
 	      // Create the 'root' Spring application context
 	      AnnotationConfigWebApplicationContext rootContext =
 	        new AnnotationConfigWebApplicationContext();
-	      rootContext.register(com.codebytes.web.AppConfig.class);
+	      rootContext.register(com.codebytes.web.setup.AppConfig.class);
 
 	      // Manage the lifecycle of the root application context
 	      container.addListener(new ContextLoaderListener(rootContext));
 	      
 	      rootContext.setServletContext(container);
-	      container.addListener(com.codebytes.web.AppContextListener.class);
+	      container.addListener(com.codebytes.web.setup.AppContextListener.class);
 	      
 	      // Create the dispatcher servlet's Spring application context
 	      AnnotationConfigWebApplicationContext dispatcherContext =
 	        new AnnotationConfigWebApplicationContext();
-	      dispatcherContext.register(com.codebytes.web.HomepageController.class);
+	      dispatcherContext.register(com.codebytes.web.controllers.HomepageController.class);
 
 	      // Register and map the dispatcher servlet
 	      ServletRegistration.Dynamic dispatcher =

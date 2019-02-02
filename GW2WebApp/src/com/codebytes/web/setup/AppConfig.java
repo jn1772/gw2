@@ -1,4 +1,4 @@
-package com.codebytes.web;
+package com.codebytes.web.setup;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -10,7 +10,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 @EnableWebMvc
 @Configuration
-@ComponentScan(basePackages = "com.codebytes")
+@ComponentScan(basePackages = "com.codebytes.*, com.codebytes.web.*")
 public class AppConfig implements WebMvcConfigurer{
 	
 	@Bean

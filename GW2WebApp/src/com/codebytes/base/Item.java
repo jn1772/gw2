@@ -1,12 +1,14 @@
-package com.codebytes.core;
+package com.codebytes.base;
 import java.util.ArrayList;
 import java.util.Date;
 
 import org.springframework.stereotype.Component;
 
+import com.codebytes.utils.CoinFormat;
+
 @Component
 public class Item implements Comparable<Item>{
-
+		
         //Item ID
         public long id;
         public int level, vendorValue;
@@ -68,7 +70,7 @@ public class Item implements Comparable<Item>{
         public double getDemand() { return demand; }
         public double getSupply() { return supply; }
         
-        Item(){
+        public Item(){
             bListings = new ArrayList<>();
             bUnitPrice = new ArrayList<>();
             bQuantity = new ArrayList<>();
@@ -86,7 +88,7 @@ public class Item implements Comparable<Item>{
             defaultSkin = null;
         }
 
-        double calcProfit(){
+        public double calcProfit(){
             if(name == null || demand == 0 || supply == 0)return 0;
             double diff = sellUnitPrice - buyUnitPrice;
             double tax = sellUnitPrice*0.15;

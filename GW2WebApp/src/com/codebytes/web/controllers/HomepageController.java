@@ -1,4 +1,7 @@
-package com.codebytes.web;
+package com.codebytes.web.controllers;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -7,17 +10,20 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.codebytes.core.GW2TP;
-import com.codebytes.core.UIDataPrep;
+import com.codebytes.base.Item;
+import com.codebytes.base.Price;
+import com.codebytes.threads.DataUpdater;
+import com.codebytes.threads.Driver;
+import com.codebytes.web.pageTools.PageState;
 
 @Controller
 public class HomepageController {
 
 	@Autowired
-	GW2TP gInstance;
+	Driver gInstance;
 	
 	@Autowired
-	UIDataPrep uiDataPrep;
+	DataUpdater updater;
 	
 	int elementsPerPage = 10;
 	
@@ -30,17 +36,20 @@ public class HomepageController {
 		if(itemId != null) {
 			System.out.println("Info requested for itemId "+itemId);
 			model.addAttribute("item", gInstance.getItem(itemId));
+			List<Price> priceInfo = gInstance.getAllPriceInfo(itemId);
+			model.addAttribute("priceInfo", priceInfo);
 			return "itemInfo";
 		}
 		
-		int total = uiDataPrep.itemRecommendations.size();
+		ArrayList<Item> top = updater.byPriceDisplay.getTopN(200);
+		int total = top.size();
 		
 		PageState ps = PageState.controlPagination(pageRequest, total, elementsPerPage);
 		
 		model.addAttribute("welcomeShort", "Welcome to GreedyTP!");
 		model.addAttribute("welcomeLong",
 				"What you can do: Historic prices, currency conversion rate, item recommendations along with some nice charts.");
-		model.addAttribute("items", uiDataPrep.itemRecommendations);
+		model.addAttribute("items", top);
 		model.addAttribute("elementsPerPage", elementsPerPage);
 		for(int i=0;i<ps.pageNumbers.length;++i) {
 			model.addAttribute("page_"+(i+1), ps.pageNumbers[i]);

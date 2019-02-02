@@ -1,4 +1,4 @@
-package com.codebytes.core;
+package com.codebytes.fetchers;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -7,11 +7,15 @@ import java.util.HashSet;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.codebytes.base.Item;
+import com.codebytes.fetchers.InfoGet;
+import com.codebytes.threads.Driver;
+
 @Component
 public class Indexer {
 	
 	@Autowired
-	GW2TP gInstance;
+	Driver gInstance;
 	
 	@Autowired 
 	InfoGet infoGet;
@@ -43,7 +47,7 @@ public class Indexer {
 	public void prepareNameIndex() {
 		nItems = gInstance.info.itemIds.size();
 		for(int i=0;i<nItems;++i) {
-			Item item = gInstance.items[(int)(long)gInstance.itemIds.get(i)];
+			Item item = gInstance.items.get((int)(long)gInstance.itemIds.get(i));
 			
 			//Limited Number of items is set for quick testing
 			//Remove it later on

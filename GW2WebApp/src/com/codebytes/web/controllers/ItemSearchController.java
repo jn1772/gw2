@@ -1,8 +1,8 @@
-package com.codebytes.web;
+package com.codebytes.web.controllers;
 
 import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Iterator;	
+import java.util.Iterator;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -11,19 +11,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import com.codebytes.core.GW2TP;
-import com.codebytes.core.Indexer;
-import com.codebytes.core.Item;
-import com.codebytes.core.UIDataPrep;
+import com.codebytes.base.Item;
+import com.codebytes.fetchers.Indexer;
+import com.codebytes.threads.Driver;
+import com.codebytes.web.pageTools.PageState;
 
 @Controller
 public class ItemSearchController {
 
 	@Autowired
-	GW2TP gInstance;
-	
-	@Autowired
-	UIDataPrep uiDataPrep;
+	Driver gInstance;	
 		
 	@Autowired
 	Indexer indexer;
@@ -35,8 +32,6 @@ public class ItemSearchController {
 	}
 		
 	int elementsPerPage = 10;
-	
-
 	
 	@RequestMapping(value = "itemSearch", method = RequestMethod.GET)
 	public String returnResults(

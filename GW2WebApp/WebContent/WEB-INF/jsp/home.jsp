@@ -2,7 +2,7 @@
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jstl/fmt"%>
 <%@ taglib prefix="sql" uri="http://java.sun.com/jstl/sql"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@page import="com.codebytes.core.Item"%>
+<%@page import="com.codebytes.base.Item"%>
 
 <html>
 <head>
@@ -12,6 +12,8 @@
 	integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
 	crossorigin="anonymous">
 <link rel="stylesheet" href='<c:url value="/resources/css/homeStyle.css"></c:url>' type="text/css">
+
+
 </head>
 <body>
 	<jsp:include page="navbar.jsp"/>

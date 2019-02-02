@@ -1,4 +1,4 @@
-package com.codebytes.core;
+package com.codebytes.utils;
 
 public class CoinFormat{
         //Gold Silver Bronze Coins
@@ -8,7 +8,7 @@ public class CoinFormat{
         public int getSilver() {return silver;}
         public int getBronze() {return bronze;}
         
-        CoinFormat(double p){
+        public CoinFormat(double p){
             gold = (int)p/10000;
             p = p%10000;
             silver = (int)p/100;

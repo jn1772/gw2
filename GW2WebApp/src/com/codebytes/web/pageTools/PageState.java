@@ -1,9 +1,10 @@
-package com.codebytes.web;
+package com.codebytes.web.pageTools;
 
 public class PageState{
 	
-	int []pageNumbers;
-	int begin, end;
+	public int []pageNumbers;
+	public int begin;
+	public int end;
 	
 	public PageState(int pageNo[], int begin, int end) {
 		this.pageNumbers = pageNo;

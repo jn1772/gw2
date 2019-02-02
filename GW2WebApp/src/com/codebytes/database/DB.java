@@ -1,4 +1,4 @@
-package com.codebytes.core;
+package com.codebytes.database;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -40,7 +40,7 @@ public class DB {
     
     public void initFactoryInstance() {
     	try {
-    		factory = new Configuration().configure("/com/codebytes/core/hibernate.cfg.xml").buildSessionFactory();
+    		factory = new Configuration().configure("com/codebytes/database/hibernate.cfg.xml").buildSessionFactory();
     	} catch (Throwable ex) {
     		System.err.println("Failed to create sessionFactory object." + ex);
     		throw new ExceptionInInitializerError(ex);	

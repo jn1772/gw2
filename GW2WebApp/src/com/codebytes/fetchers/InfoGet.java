@@ -1,4 +1,4 @@
-package com.codebytes.core;
+package com.codebytes.fetchers;
 
 import java.io.IOException;
 import java.net.URI;
@@ -25,15 +25,22 @@ import org.json.simple.parser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.codebytes.base.ExchangeRate;
+import com.codebytes.base.Item;
+import com.codebytes.base.Price;
+import com.codebytes.database.DB;
+import com.codebytes.threads.Driver;
+
 /*
 This class basically requests info from the GW2 servers and populates the local
 structures.
 */
 @Component
+public
 class InfoGet{
     
 	@Autowired
-	GW2TP gInstance;
+	Driver d;
 	
 	@Autowired
     DB db;
@@ -41,9 +48,9 @@ class InfoGet{
 	@Autowired
 	Indexer indexer;
 	
-	ArrayList<Long> itemIds;
-    Item[] items;
-    Price[] prices;
+	public ArrayList<Long> itemIds;
+	public ArrayList<Item> items;
+	public ArrayList<Price> prices;
     
     int max;
     
@@ -56,21 +63,27 @@ class InfoGet{
     static int maxThreads = 200;
     
 	InfoGet(){
-    	itemIds = getItemsIds();
-    	items = initItems();
-    	prices = new Price[items.length];
+//    	itemIds = getItemsIds();
+//    	items = initItems();
+//    	prices = new ArrayList<>();
+//    	for(int i=0;i<itemIds.size();++i)prices.add(new Price());
 	}
 	
-    void updateInfo(LocalDateTime dt) {
+    public void updateInfo(LocalDateTime dt) {
     	itemIds = getItemsIds();
     	items = initItems();
-    	prices = new Price[items.length];
+    	prices = new ArrayList<>();
+    	for(int i=0;i<itemIds.size();++i)prices.add(new Price());
     	
     	max = 200;//itemIds.size(); //400
     	
     	getItemsInfoFast();
     	getItemPricesFast(dt);
     	updateExchangeRate();
+    	
+    	d.setItems(items);
+    	d.setPrices(prices);
+    	d.setItemIds(itemIds);
     }
 
     /*
@@ -134,15 +147,17 @@ class InfoGet{
     /*
      * Init the item array for given ids fetched from getItemIds()
      */
-    Item[] initItems(){
+    ArrayList<Item> initItems(){
         int max = 0;
         for(int i=0;i<itemIds.size();++i){
             max = Math.max((int)(long)itemIds.get(i), max);
         }
-        Item[] items = new Item[max+1];
+        ArrayList<Item> items = new ArrayList<>();
+        for(int i=0;i<max+1;++i)items.add(new Item());
+        
         for(int i=0;i<itemIds.size();++i){
-            items[(int)(long)itemIds.get(i)] = new Item();
-            items[(int)(long)itemIds.get(i)].id = itemIds.get(i);
+            Item item = items.get((int)(long)itemIds.get(i));
+            item.id = itemIds.get(i);
         }
         return items;
     }
@@ -150,14 +165,14 @@ class InfoGet{
     /*
     Get Item Prices at TP for 'max' number of items in items[]. 200 at a time.
     */
-    ArrayList<Long> getItemsListings(Item []items, ArrayList<Long> ids, int maxx) throws Exception {
+    ArrayList<Long> getItemsListings(int maxx) throws Exception {
         int max = maxx;//ids.size();
         int processed = 0;
         while(processed < max){
             StringBuilder sbb = new StringBuilder();
             int j;
             for (j = processed; j < Math.min(200 + processed, max); ++j) {
-                sbb.append(items[(int)(long)ids.get(j)].id).append(",");
+                sbb.append(items.get((int)(long)itemIds.get(j)).id).append(",");
             }
             processed = j;
             sbb.deleteCharAt(sbb.length()-1);
@@ -189,9 +204,9 @@ class InfoGet{
                                 " Buy : [listings, price, quantity]: "+
                                 listings+", "+price+", "+quantity);
 
-                        items[id].bListings.add(listings);
-                        items[id].bUnitPrice.add(price);
-                        items[id].bQuantity.add(quantity);
+                        items.get(id).bListings.add(listings);
+                        items.get(id).bUnitPrice.add(price);
+                        items.get(id).bQuantity.add(quantity);
                     }
 
                     itt = sells.iterator();
@@ -204,9 +219,9 @@ class InfoGet{
                         if(debug)System.out.println("curr: "+curr+
                                 " Sell : [listings, price, quantity]: "+
                                 listings+", "+price+", "+quantity);
-                        items[id].sListings.add(listings);
-                        items[id].sUnitPrice.add(price);
-                        items[id].sQuantity.add(quantity);
+                        items.get(id).sListings.add(listings);
+                        items.get(id).sUnitPrice.add(price);
+                        items.get(id).sQuantity.add(quantity);
                     }
                     curr++;
                 }
@@ -230,7 +245,7 @@ class InfoGet{
             //System.out.println("response  "+response);
             cpg = (int)(long)obj.get("coins_per_gem");
             quantity = (int)(long)obj.get("quantity");
-            gInstance.exchangeRate.coins_per_gem_buy = cpg;
+            d.exchangeRate.coins_per_gem_buy = cpg;
             //write db insertion code here
         }catch(ParseException e){
             System.out.println("Parse Exception for response : "+response);
@@ -247,7 +262,7 @@ class InfoGet{
             //System.out.println("response  "+response);
             cpg = (int)(long)obj.get("coins_per_gem");
             quantity = (int)(long)obj.get("quantity");
-            gInstance.exchangeRate.coins_per_gem_sell = cpg;
+            d.exchangeRate.coins_per_gem_sell = cpg;
             //write db insertion code here
         }catch(ParseException e){
             System.out.println("Parse Exception for response : "+response);
@@ -281,7 +296,7 @@ class InfoGet{
             er.setCPGB(cpg);
             er.setCPGS(gpc);
             
-            gInstance.exchangeRate = er;
+            d.exchangeRate = er;
             
             session.save(er);
             tx.commit();
@@ -345,15 +360,15 @@ class InfoGet{
 	 		                Integer default_skin = null;
 	 		                if(df!=null) default_skin = (int)(long)df;
 	 		                	 		                
-	 		                items[id].setChatLink(chat_link);
-	 		                items[id].setName(name);
-	 		                items[id].setIcon(icon);
-	 		              	items[id].setDescription(description);
-	 		             	items[id].setType(Item.Type.valueOf(type));
-	 		            	items[id].setRarity(Item.Rarity.valueOf(rarity));
-	 		           		items[id].setLevel(level);
-	 		          		items[id].setVendorValue(vendor_value);
-	 		         		items[id].setDefaultSkin(default_skin);
+	 		                items.get(id).setChatLink(chat_link);
+	 		                items.get(id).setName(name);
+	 		                items.get(id).setIcon(icon);
+	 		              	items.get(id).setDescription(description);
+	 		             	items.get(id).setType(Item.Type.valueOf(type));
+	 		            	items.get(id).setRarity(Item.Rarity.valueOf(rarity));
+	 		           		items.get(id).setLevel(level);
+	 		          		items.get(id).setVendorValue(vendor_value);
+	 		         		items.get(id).setDefaultSkin(default_skin);
 	 		            }
  		    	}catch (ClassCastException e){
 	                System.err.println("!Exception (Class Cast). Continuing...");
@@ -415,23 +430,22 @@ class InfoGet{
 		                    Integer s_quant = (int)(long)sells.get("quantity");
 		                    double s_price = (int)(long)sells.get("unit_price");
 		                    
-		                    items[id].demand = b_quant;
-		                    items[id].supply = s_quant;
-		                    items[id].setBuyUnitPrice(b_price);
-		                    items[id].setSellUnitPrice(s_price);
-		                    items[id].calcProfit();
-		                    items[id].setLastUpdated();
+		                    items.get(id).demand = b_quant;
+		                    items.get(id).supply = s_quant;
+		                    items.get(id).setBuyUnitPrice(b_price);
+		                    items.get(id).setSellUnitPrice(s_price);
+		                    items.get(id).calcProfit();
+		                    items.get(id).setLastUpdated();
 		                    
-		                    prices[id] = new Price();
-		                    prices[id].setId(id);
-		                    prices[id].setBuyPrice(b_price);
-		                    prices[id].setSellPrice(s_price);
-		                    prices[id].setBuyQuantity(b_quant);
-		                    prices[id].setSellQuantity(s_quant);
-		                    prices[id].setTimeStamp(Date.from(lastQuarter.atZone(ZoneId.systemDefault()).toInstant()));
-		                    prices[id].setProfit();
+		                    prices.get(id).setId(id);
+		                    prices.get(id).setBuyPrice(b_price);
+		                    prices.get(id).setSellPrice(s_price);
+		                    prices.get(id).setBuyQuantity(b_quant);
+		                    prices.get(id).setSellQuantity(s_quant);
+		                    prices.get(id).setTimeStamp(Date.from(lastQuarter.atZone(ZoneId.systemDefault()).toInstant()));
+		                    prices.get(id).setProfit();
 		                    
-		                    session.save(prices[id]);
+		                    session.save(prices.get(id));
 		                }
 		            }catch (ClassCastException e){
 		                System.err.println("!Exception (Class Cast). Continuing...");
@@ -449,7 +463,7 @@ class InfoGet{
 
 class Fetcher implements Runnable{
 
-	Item[] items;
+	ArrayList<Item> items;
 	ArrayList<Long> ids;
 	int maxx;
 	
@@ -481,7 +495,7 @@ class Fetcher implements Runnable{
             StringBuilder sbb = new StringBuilder();
             int j;
             for (j = offset; j < Math.min(200 + offset, maxx); ++j) {
-                sbb.append(items[(int)(long)ids.get(j)].id).append(",");
+                sbb.append(items.get((int)(long)ids.get(j)).id).append(",");
             }
             processed = j;
             sbb.deleteCharAt(sbb.length()-1);

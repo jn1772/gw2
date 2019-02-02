@@ -1,4 +1,4 @@
-package com.codebytes.core;
+package com.codebytes.threads;
 
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -10,6 +10,9 @@ import org.hibernate.Transaction;
 import org.hibernate.query.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import com.codebytes.base.Price;
+import com.codebytes.database.DB;
 
 @Service
 public class DBCleaner {

@@ -1,16 +1,18 @@
-package com.codebytes.core;
+package com.codebytes.utils;
 
 import java.util.Arrays;
 import java.util.Comparator;
 
 import org.springframework.stereotype.Component;
 
+import com.codebytes.base.Item;
+
 @Component
 public class Genie {
     
 	public Genie() {}
 
-	Item[] sortItemsByMaxProfit(Item[] items) {
+	public Item[] sortItemsByMaxProfit(Item[] items) {
         Item[] curItems = new Item[items.length];
         
         System.arraycopy(items, 0, curItems, 0, curItems.length);
