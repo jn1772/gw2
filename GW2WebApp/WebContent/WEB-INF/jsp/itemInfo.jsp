@@ -81,7 +81,7 @@
 		</div>
 		
 		<div class="row">
-		<div class="col-md-12" style="padding-left:0;padding-right:0;">
+		<div class="col-md-12">
 					
 					<div class="card mb-3">
   					<div class="card-header bg-info text-light">Price Chart</div>
@@ -105,7 +105,7 @@
 <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
 <script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
 <script>
-	var ids = ${item.id};
+	var id = ${item.id};
 </script>
 <script src="resources/js/chart.js"></script>
 </body>

@@ -48,16 +48,16 @@ public class Driver{
     
     long UPDATE_FREQUENCY = 15 * 60 * 60 * 1000L;
     
-	public List<Price> getAllPriceInfo(int id){
-    	String hql = "FROM Price p WHERE p.id="+id+" ORDER BY timestamp";
-    	Session session = db.getSession();
-    	Query query = session.createQuery(hql);
-    	List<Price> results = query.list();
-    	for(Price i:results) {
-    		System.out.println(i.id+" time : "+i.timestamp);
-    	}
-    	return results;
-    }
+//	public List<Price> getAllPriceInfo(int id){
+//    	String hql = "FROM Price p WHERE p.id="+id+" ORDER BY timestamp";
+//    	Session session = db.getSession();
+//    	Query query = session.createQuery(hql);
+//    	List<Price> results = query.list();
+//    	for(Price i:results) {
+//    		System.out.println(i.id+" time : "+i.timestamp);
+//    	}
+//    	return results;
+//    }
 	
 	@PostConstruct
     public void init() {

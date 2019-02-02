@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import com.codebytes.base.Item;
 import com.codebytes.base.Price;
+import com.codebytes.database.PriceDAO;
 import com.codebytes.threads.DataUpdater;
 import com.codebytes.threads.Driver;
 import com.codebytes.web.pageTools.PageState;
@@ -20,7 +21,7 @@ import com.codebytes.web.pageTools.PageState;
 public class HomepageController {
 
 	@Autowired
-	Driver gInstance;
+	Driver d;
 	
 	@Autowired
 	DataUpdater updater;
@@ -34,10 +35,13 @@ public class HomepageController {
 		ModelMap model) {
 		
 		if(itemId != null) {
+			Item item = d.getItem(itemId);
 			System.out.println("Info requested for itemId "+itemId);
-			model.addAttribute("item", gInstance.getItem(itemId));
-			List<Price> priceInfo = gInstance.getAllPriceInfo(itemId);
-			model.addAttribute("priceInfo", priceInfo);
+			model.addAttribute("item", item);
+//			List<Price> priceInfo = gInstance.getAllPriceInfo(itemId);
+//			model.addAttribute("priceInfo", priceInfo);
+			PriceDAO itemPriceHistory = new PriceDAO(item, d.getDB());
+			itemPriceHistory.getDBData();
 			return "itemInfo";
 		}
 		

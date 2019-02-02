@@ -45,22 +45,38 @@ function createChart() {
   });
 }
 
-$.each(names, function (i, name) {
+var JSON, buyPriceData, sellPriceData, demandData, supplyData, timestampsData;
+var dataArr = [];
+var dataNew = [];
 
-  
-  $.getJSON('http://localhost:8080/GW2TP/v1/items?ids='+id+'&'+getParams[i],  function (data) {
+$.getJSON('http://localhost:8080/GW2TP/v1/item/chdata?id='+id, function(json){
+	JSON = json;
+	buyPriceData = json.buyPrice;
+	sellPriceData = json.sellPrice;
+	demandData = json.demand;
+	supplyData = json.supply;
+	timestampsData = json.timestamps;
+	dataArr = [sellPriceData, buyPriceData, supplyData, demandData];
+	
+	$.each(names, function (i, name) {
+		
+		var q;
+		dataNew[i] = [];
+		for(q=0;q<dataArr[i].length;q++){
+			dataNew[i][q] = [timestampsData[q], dataArr[i][q]];
+		}
+		
+	    seriesOptions[i] = {
+	      name: name,
+	      data: dataNew[i]
+	    };
 
-    seriesOptions[i] = {
-      name: name,
-      data: data
-    };
+	    // As we're loading the data asynchronously, we don't know what order it will arrive. So
+	    // we keep a counter and create the chart when all the data is loaded.
+	    seriesCounter += 1;
 
-    // As we're loading the data asynchronously, we don't know what order it will arrive. So
-    // we keep a counter and create the chart when all the data is loaded.
-    seriesCounter += 1;
-
-    if (seriesCounter === names.length) {
-      createChart();
-    }
-  });
+	    if (seriesCounter === names.length) {
+	      createChart();
+	    }
+	});
 });
