@@ -1,53 +1,127 @@
 var seriesOptions = [],
     seriesCounter = 0,
-    names = ['Sell Price', 'Buy Price', 'Sell Quantity', 'Buy Quantity'],
-	getParams = ['sellPrice', 'buyPrice', 'sellQuantity', 'buyQuantity'];
+    names1 = ['Sell Price', 'Buy Price'],
+	getParams = ['sellPrice', 'buyPrice'];
 
-/**
- * Create the chart when all data is loaded
- * @returns {undefined}
- */
+var seriesOptions2 = [],
+	names2 = ['Supply', 'Demand'],
+	getParams2 = ['sellQuantity', 'buyQuantity'];
+
+var	colors = ['green', 'red', 'black', 'purple'];
+
 function createChart() {
 
   Highcharts.stockChart('container', {
 
     rangeSelector: {
-      selected: 4
+      selected: 1
     },
-
-    yAxis: {
-      labels: {
-        formatter: function () {
-          return (this.value > 0 ? ' + ' : '') + this.value + '%';
+    
+    title: {
+        text: 'Trading Post History'
+    },
+    
+    yAxis: [
+    	{
+    		labels: {
+    			useHTML: true,
+    			align: 'right',
+                x: -5,
+    			formatter: function () {
+    				var ret = getMoneyYAxis(this.value);
+    				return (ret);
+    			}
+    		},
+    		
+    		title: {
+                text: 'Price'
+            },
+            height: '50%',
+            lineWidth: 2,
+            resize: {
+                enabled: true
+            }
+    	},
+    	{
+    		labels: {
+    			useHTML: true,
+    			align: 'right',
+                x: -3,
+    			formatter: function () {
+    				return (this.value);
+    			}
+    		},
+    		title: {
+                text: 'Volume'
+            },
+            top: '55%',
+            height: '45%',
+            offset: 0,
+            lineWidth: 2
         }
-      },
-      plotLines: [{
-        value: 0,
-        width: 2,
-        color: 'silver'
-      }]
-    },
-
+  	],
+  	
+	plotLines: [{
+		value: 0,
+		width: 0,
+		color: 'silver',
+//		color: 'white'
+	}],
+	
     plotOptions: {
-      series: {
-        compare: 'percent',
+      series: [{
+        compare: 'value',
         showInNavigator: true
+      },
+      {
+          compare: 'value',
+          showInNavigator: true
+      },
+      {
+          compare: 'value',
+          showInNavigator: true
+      },
+      {
+          compare: 'value',
+          showInNavigator: true
       }
+      ]
     },
-
-    tooltip: {
-      pointFormat: '<span style="color:{series.color}">{series.name}</span>: <b>{point.y}</b> ({point.change}%)<br/>',
-      valueDecimals: 2,
-      split: true
+    navigator: {
+    	maskFill: 'rgba(102,133,194,0.3)',
+    	series: {
+            color: '#00FF00',
+            lineWidth: 2
+        }
     },
-
+    tooltip: 
+    	{
+	      shared: false,
+	      split: true,
+	      useHTML: true,
+	      backgroundColor: 'white',
+	      borderWidth: 3,
+//	      borderRadius: 3,
+	      pointFormatter: function(){
+	    	  var val = this.y;
+	    	  
+	    	  if(this.series.index < 2){
+	    		  val = getMoneyToolTip(this.y);
+	    	  } else val = this.y;
+	    	  return '<span style="color:'+this.series.color+'">'+this.series.name+'</span>: '+val+'<br>';
+	      },
+    	},
+    
     series: seriesOptions
   });
 }
 
 var JSON, buyPriceData, sellPriceData, demandData, supplyData, timestampsData;
-var dataArr = [];
-var dataNew = [];
+var dataArr1 = [];
+var dataArr2 = [];
+var dataNew1 = [];
+var dataNew2 = [];
+var cnt = 0;
 
 $.getJSON('http://localhost:8080/GW2TP/v1/item/chdata?id='+id, function(json){
 	JSON = json;
@@ -56,27 +130,44 @@ $.getJSON('http://localhost:8080/GW2TP/v1/item/chdata?id='+id, function(json){
 	demandData = json.demand;
 	supplyData = json.supply;
 	timestampsData = json.timestamps;
-	dataArr = [sellPriceData, buyPriceData, supplyData, demandData];
+	dataArr1 = [sellPriceData, buyPriceData];
+	dataArr2 = [supplyData, demandData];
+	cnt=0;
 	
-	$.each(names, function (i, name) {
+	$.each(names1, function (i, name) {
 		
 		var q;
-		dataNew[i] = [];
-		for(q=0;q<dataArr[i].length;q++){
-			dataNew[i][q] = [timestampsData[q], dataArr[i][q]];
+		console.log("i = "+i+" begin"+dataArr1[0].length+"end");
+		dataNew1[i] = [];
+		for(q=0;q<dataArr1[i].length;q++){
+			dataNew1[i][q] = [timestampsData[q], dataArr1[i][q]];
+//			dataNew1[i][q] = dataArr1[i][q];
 		}
 		
-	    seriesOptions[i] = {
+	    seriesOptions[cnt] = {
 	      name: name,
-	      data: dataNew[i]
+	      data: dataNew1[i],
+	      color: colors[cnt],
 	    };
-
-	    // As we're loading the data asynchronously, we don't know what order it will arrive. So
-	    // we keep a counter and create the chart when all the data is loaded.
-	    seriesCounter += 1;
-
-	    if (seriesCounter === names.length) {
-	      createChart();
-	    }
+	    cnt++;
 	});
+	
+	$.each(names2, function (i, name) {
+		
+		var q;
+		dataNew2[i] = [];
+		for(q=0;q<dataArr2[i].length;q++){
+			dataNew2[i][q] = [timestampsData[q], dataArr2[i][q]];
+//			dataNew2[i][q] = dataArr2[i][q];
+		}
+		
+	    seriesOptions[cnt] = {
+	      name: name,
+	      data: dataNew2[i],
+	      color: colors[cnt],
+	      yAxis: 1,
+	    };
+	    cnt++;
+	});
+	createChart();
 });

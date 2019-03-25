@@ -29,6 +29,7 @@ import com.codebytes.base.ExchangeRate;
 import com.codebytes.base.Item;
 import com.codebytes.base.Price;
 import com.codebytes.database.DB;
+import com.codebytes.indexers.Indexer;
 import com.codebytes.threads.Driver;
 
 /*

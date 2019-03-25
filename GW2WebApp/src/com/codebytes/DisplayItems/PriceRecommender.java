@@ -12,21 +12,21 @@ import org.springframework.stereotype.Component;
 import com.codebytes.base.Item;
 import com.codebytes.threads.Driver;
 
+@Component
 public class PriceRecommender implements DisplayItems{
 	
+	@Autowired
 	Driver d;
 	
 	ArrayList<Item> items;
     
-    public PriceRecommender(Driver d) {
-    	this.d = d;
-    	if(d==null)System.out.println("\n\n\n\nD is null\n\n\n\n");
-    	else System.out.println("\n\n\n\nD Is not null\n\n\n\n");
-    	refreshItems();
+    public PriceRecommender() {
+    	items = new ArrayList<>();
     }
     
 	@Override
 	public ArrayList<Item> getTopN(int n) {
+		if(n>items.size()) { return items; }
 		return new ArrayList<>(items.subList(0, n));
 	}
 	

@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import com.codebytes.base.Item;
-import com.codebytes.fetchers.Indexer;
+import com.codebytes.indexers.Indexer;
 import com.codebytes.threads.Driver;
 import com.codebytes.web.pageTools.PageState;
 
@@ -92,7 +92,7 @@ public class ItemSearchController {
 		model.addAttribute("begin", ps.begin);
 		model.addAttribute("end", ps.end);
 		
-		System.out.println("begin = "+ps.begin+" end = "+ps.end);
+//		System.out.println("begin = "+ps.begin+" end = "+ps.end);
 		
 		return "itemSearch";
 	}
@@ -100,13 +100,13 @@ public class ItemSearchController {
 	public void searchByName(String name){
 		String[] parts = name.split(" ");
 		for(String s:parts) {
-			HashSet<Item> set = indexer.nameIndex.get(s);
-			System.out.println("Checking mapping for " +s+" null ? "+(set==null));
+			HashSet<Item> set = indexer.nameCount.get(s);
+//			System.out.println("Checking mapping for " +s+" null ? "+(set==null));
 			if(set==null)continue;
 			Iterator<Item> it = set.iterator();
 			while(it.hasNext()) {
 				Item a = it.next();
-				System.out.println("Added item : "+a.name);
+//				System.out.println("Added item : "+a.name);
 				results.add(a);
 			}
 		}

@@ -61,7 +61,6 @@ public class HomepageController {
 		model.addAttribute("begin", ps.begin);
 		model.addAttribute("end", ps.end);
 		
-		System.out.println("begin = "+ps.begin+" end = "+ps.end);
 		return "home";
 	}
 	

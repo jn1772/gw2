@@ -88,7 +88,7 @@
   					<div class="card-body">
     				<p class="card-text">
     				</p>
-    			<div id="container"></div>
+    			<div id="container" style="height: 500px; margin: 0 auto"></div>
   					</div>
   					</div>
 			</div>
@@ -107,6 +107,7 @@
 <script>
 	var id = ${item.id};
 </script>
+<script src="resources/js/tools.js"></script>
 <script src="resources/js/chart.js"></script>
 </body>
 </html>

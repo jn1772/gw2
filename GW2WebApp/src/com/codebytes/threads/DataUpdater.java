@@ -15,19 +15,21 @@ import com.codebytes.DisplayItems.PriceRecommender;
 @Component
 public class DataUpdater implements Runnable{
 	
+	@Autowired
 	Driver d;
 	
 	ArrayList<DisplayItems> di;
 	
-	public DisplayItems byPriceDisplay;
+	@Autowired
+	public PriceRecommender byPriceDisplay;
 	
-	public DataUpdater(Driver d) {
-		this.d = d;
+	public DataUpdater() {
 		di = new ArrayList<>();
-		if(d == null)System.out.println("\n\n\n\n\nIS NULL\n\n\n\n\n");
-		else System.out.println("\n\n\n\n\n\nIS NOT NULL\n\n\n\n\n");
-		d.info.updateInfo(getLastQuarter());
-		byPriceDisplay = new PriceRecommender(d);
+		byPriceDisplay = new PriceRecommender();
+	}
+	
+	@PostConstruct
+	void addRecommenders() {
 		di.add(byPriceDisplay);
 	}
 	
@@ -36,7 +38,6 @@ public class DataUpdater implements Runnable{
 		try {
 			while(true) {
 		    	LocalDateTime lastQuarter = getLastQuarter();
-		    	
 		    	while(lastQuarterLogged != null && lastQuarter.isEqual(lastQuarterLogged)) {
 		    		Thread.sleep(1*60*1000L);
 		    		System.out.println("Slept "+(1)+"minute.");
@@ -45,7 +46,7 @@ public class DataUpdater implements Runnable{
 		    	
 		    	lastQuarterLogged = lastQuarter;
 		    	
-	        	d.info.updateInfo(lastQuarter);	        	
+		    	d.info.updateInfo(lastQuarter);	        	
 	        	d.indexer.beginIndexing();
 	        	
 	        	for(DisplayItems displayItem:di) {

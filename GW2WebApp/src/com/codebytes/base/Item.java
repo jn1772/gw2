@@ -70,6 +70,9 @@ public class Item implements Comparable<Item>{
         public double getDemand() { return demand; }
         public double getSupply() { return supply; }
         
+        public final static int nTypes = Type.values().length;
+        public final static int nRarity = Rarity.values().length;
+        
         public Item(){
             bListings = new ArrayList<>();
             bUnitPrice = new ArrayList<>();
@@ -112,6 +115,7 @@ public class Item implements Comparable<Item>{
         public enum Rarity{
         	Junk, Basic, Fine, Masterwork, Rare, Exotic, Ascended, Legendary
         }
+        
         public enum Type{
         	Armor, Back, Bag, Consumable, Container, CraftingMaterial,
         	Gathering,	Gizmo,	MiniPet, Tool, Trait, Trinket, Trophy,

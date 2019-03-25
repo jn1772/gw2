@@ -16,8 +16,8 @@ import com.codebytes.base.ExchangeRate;
 import com.codebytes.base.Item;
 import com.codebytes.base.Price;
 import com.codebytes.database.DB;
-import com.codebytes.fetchers.Indexer;
 import com.codebytes.fetchers.InfoGet;
+import com.codebytes.indexers.Indexer;
 
 @Component
 public class Driver{
@@ -59,12 +59,15 @@ public class Driver{
 //    	return results;
 //    }
 	
+    @Autowired
+    public DataUpdater dataUpdater;
+    
 	@PostConstruct
     public void init() {
      	try {
 	    	executor = Executors.newFixedThreadPool(1);
 	        //Max items from TP (only for testing)
-	    	thread = new Thread(new DataUpdater(this));
+	    	thread = new Thread(dataUpdater);
 	    	thread.start();
      	}catch(Exception e) {
      		e.printStackTrace();
